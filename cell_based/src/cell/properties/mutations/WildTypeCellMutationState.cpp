@@ -36,7 +36,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "WildTypeCellMutationState.hpp"
 
 WildTypeCellMutationState::WildTypeCellMutationState()
-    : AbstractCellMutationState(1)
+    : AbstractCellMutationState(3)
 {}
 
 #include "SerializationExportWrapperForCpp.hpp"
