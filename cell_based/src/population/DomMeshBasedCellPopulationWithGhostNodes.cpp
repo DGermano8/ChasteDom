@@ -62,10 +62,9 @@ DomMeshBasedCellPopulationWithGhostNodes<DIM>::DomMeshBasedCellPopulationWithGho
                mWriteVtkAsPointsDom(false),
                mOutputMeshInVtkDom(false)
                
-
 {
     //
-    mpMutableMesh = static_cast<MutableMesh<DIM,DIM>* >(&(this->mrMesh));
+    mpGhostMutableMesh = static_cast<MutableMesh<DIM,DIM>* >(&(this->mrMesh));
     //
 
     if (!locationIndices.empty())
@@ -103,7 +102,9 @@ DomMeshBasedCellPopulationWithGhostNodes<DIM>::DomMeshBasedCellPopulationWithGho
                                                                                   double ghostSpringStiffness, double ghostRestSeperation)
     : MeshBasedCellPopulation<DIM,DIM>(rMesh),
       mGhostSpringStiffness(ghostSpringStiffness),
-      mGhostRestSeperation(ghostRestSeperation)
+      mGhostRestSeperation(ghostRestSeperation),
+      mWriteVtkAsPointsDom(false),
+      mOutputMeshInVtkDom(false)
 {
 }
 
@@ -252,17 +253,15 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::Validate()
 
 //
 template<unsigned DIM>
-MutableMesh<DIM,DIM>& DomMeshBasedCellPopulationWithGhostNodes<DIM>::rGetMesh()
+MutableMesh<DIM,DIM>& DomMeshBasedCellPopulationWithGhostNodes<DIM>::rGetGhostMesh()
 {
-
-
-    return *mpMutableMesh;
+    return *mpGhostMutableMesh;
 }
 
 template<unsigned DIM>
-const MutableMesh<DIM,DIM>& DomMeshBasedCellPopulationWithGhostNodes<DIM>::rGetMesh() const
+const MutableMesh<DIM,DIM>& DomMeshBasedCellPopulationWithGhostNodes<DIM>::rGetGhostMesh() const
 {
-    return *mpMutableMesh;
+    return *mpGhostMutableMesh;
 }
 //
 
@@ -501,19 +500,19 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
 
         double dist_threshold = 2.0;
 
-        for (unsigned node_index=0; node_index<rGetMesh().GetNumNodes(); node_index++)
+        for (unsigned node_index=0; node_index<rGetGhostMesh().GetNumNodes(); node_index++)
         {
-            const c_vector<double, 3>& r_location = rGetMesh().GetNode(node_index)->rGetLocation();
+            const c_vector<double, 3>& r_location = rGetGhostMesh().GetNode(node_index)->rGetLocation();
             nodes.push_back(new Node<3>(node_index, r_location));
             pMutableMesh->AddNode(new Node<3>(node_index, r_location));
         }
 
 
         int element_iter = 0;
-        for (unsigned elem_index=0; elem_index<rGetMesh().GetNumElements(); elem_index++)
+        for (unsigned elem_index=0; elem_index<rGetGhostMesh().GetNumElements(); elem_index++)
         {    
 
-            Element<DIM,DIM>* pElement=rGetMesh().GetElement(elem_index);
+            Element<DIM,DIM>* pElement=rGetGhostMesh().GetElement(elem_index);
 
             // PRINT_VARIABLE(pElement);
 
@@ -524,10 +523,10 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
                 unsigned Node2Index = pElement->GetNodeGlobalIndex((2+j)%4);
                 unsigned Node3Index = pElement->GetNodeGlobalIndex((3+j)%4);
 
-                const c_vector<double, 3>& r_location0 = rGetMesh().GetNode(Node0Index)->rGetLocation();
-                const c_vector<double, 3>& r_location1 = rGetMesh().GetNode(Node1Index)->rGetLocation();
-                const c_vector<double, 3>& r_location2 = rGetMesh().GetNode(Node2Index)->rGetLocation();
-                const c_vector<double, 3>& r_location3 = rGetMesh().GetNode(Node3Index)->rGetLocation();
+                const c_vector<double, 3>& r_location0 = rGetGhostMesh().GetNode(Node0Index)->rGetLocation();
+                const c_vector<double, 3>& r_location1 = rGetGhostMesh().GetNode(Node1Index)->rGetLocation();
+                const c_vector<double, 3>& r_location2 = rGetGhostMesh().GetNode(Node2Index)->rGetLocation();
+                const c_vector<double, 3>& r_location3 = rGetGhostMesh().GetNode(Node3Index)->rGetLocation();
 
 
                 double distance_between_nodes_01 = norm_2(r_location0 - r_location1);

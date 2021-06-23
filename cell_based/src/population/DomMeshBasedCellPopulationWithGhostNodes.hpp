@@ -71,6 +71,13 @@ private:
 
     double mGhostRestSeperation;
 
+    ////
+    /** Whether to write cells as points in VTK. */
+    bool mWriteVtkAsPointsDom;
+
+    bool mOutputMeshInVtkDom;
+    ////
+
 
     /** Needed for serialization. */
     friend class boost::serialization::access;
@@ -99,11 +106,12 @@ private:
         archive & mIsGhostNode;
         archive & mGhostSpringStiffness;
         archive & mGhostRestSeperation;
-        archive & boost::serialization::base_object<MeshBasedCellPopulation<DIM, DIM> >(*this);
         ////
         archive & mWriteVtkAsPointsDom;
         archive & mOutputMeshInVtkDom;
         ////
+        archive & boost::serialization::base_object<MeshBasedCellPopulation<DIM, DIM> >(*this);
+
     }
 
     /**
@@ -152,15 +160,10 @@ protected:
     virtual void AcceptCellWritersAcrossPopulation();
 
     //
-    MutableMesh<DIM, DIM>* mpMutableMesh;
+    MutableMesh<DIM, DIM>* mpGhostMutableMesh;
     //
 
-    ////
-    /** Whether to write cells as points in VTK. */
-    bool mWriteVtkAsPointsDom;
 
-    bool mOutputMeshInVtkDom;
-    ////
 public:
 
     /**
@@ -198,12 +201,12 @@ public:
     /**
      * @return reference to mrMesh.
      */
-    MutableMesh<DIM, DIM>& rGetMesh();
+    MutableMesh<DIM, DIM>& rGetGhostMesh();
 
     /**
      * @return const reference to mrMesh (used in archiving).
      */
-    const MutableMesh<DIM, DIM>& rGetMesh() const;
+    const MutableMesh<DIM, DIM>& rGetGhostMesh() const;
 //
 
     /**
