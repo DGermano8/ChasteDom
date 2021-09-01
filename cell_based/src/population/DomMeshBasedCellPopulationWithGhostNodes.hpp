@@ -92,17 +92,19 @@ private:
          * In its current form the code does not allow the direct serialization
          * of the VertexMesh class, so instead we delete mpVoronoiTessellation.
          */
-        delete mpVoronoiTessellation;
-        mpVoronoiTessellation = nullptr;
+        // delete mpVoronoiTessellation;
+        // mpVoronoiTessellation = nullptr;
 
         // This needs to be first so that MeshBasedCellPopulation::Validate() doesn't go mental.
         archive & mIsGhostNode;
         archive & mGhostSpringStiffness;
         archive & mGhostRestSeperation;
-        archive & boost::serialization::base_object<MeshBasedCellPopulation<DIM, DIM> >(*this);
         ////
         archive & mWriteVtkAsPointsDom;
         archive & mOutputMeshInVtkDom;
+
+        archive & boost::serialization::base_object<MeshBasedCellPopulation<DIM, DIM> >(*this);
+
         ////
     }
 
@@ -140,7 +142,7 @@ protected:
      * GetDelaunayNodeIndexCorrespondingToVoronoiElementIndex()
      * and GetVoronoiElementIndexCorrespondingToDelaunayNodeIndex() on mpVoronoiTessellation.
      */
-    VertexMesh<DIM, DIM>* mpVoronoiTessellation;
+    // VertexMesh<DIM, DIM>* mpVoronoiTessellation;
 
 
     /**
@@ -152,7 +154,7 @@ protected:
     virtual void AcceptCellWritersAcrossPopulation();
 
     //
-    MutableMesh<DIM, DIM>* mpMutableMesh;
+    // MutableMesh<DIM, DIM>* mpMutableMesh;
     //
 
     ////
@@ -195,15 +197,15 @@ public:
     virtual ~DomMeshBasedCellPopulationWithGhostNodes();
 
 //
-    /**
-     * @return reference to mrMesh.
-     */
-    MutableMesh<DIM, DIM>& rGetMesh();
+    // /**
+    //  * @return reference to mrMesh.
+    //  */
+    // MutableMesh<DIM, DIM>& rGetExtendedMesh();
 
-    /**
-     * @return const reference to mrMesh (used in archiving).
-     */
-    const MutableMesh<DIM, DIM>& rGetMesh() const;
+    // /**
+    //  * @return const reference to mrMesh (used in archiving).
+    //  */
+    // const MutableMesh<DIM, DIM>& rGetExtendedMesh() const;
 //
 
     /**
@@ -323,15 +325,15 @@ public:
      */
     bool GetOutputMeshInVtkDom();
 
-    /**
-     * Create a Voronoi tessellation of the mesh.
-     */
-    void CreateVoronoiTessellation();
+    // /**
+    //  * Create a Voronoi tessellation of the mesh.
+    //  */
+    // void CreateVoronoiTessellation();
 
-    /**
-     * @return a reference to mpVoronoiTessellation.
-     */
-    VertexMesh<DIM, DIM>* GetVoronoiTessellation();
+    // /**
+    //  * @return a reference to mpVoronoiTessellation.
+    //  */
+    // VertexMesh<DIM, DIM>* GetVoronoiTessellation();
 ////
     /**
      * Outputs CellPopulation parameters to file
