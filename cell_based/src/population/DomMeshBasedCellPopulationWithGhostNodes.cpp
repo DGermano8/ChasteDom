@@ -483,7 +483,7 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
     std::vector<std::string> cell_data_names = this->Begin()->GetCellData()->GetKeys();
 
     //PRINT_VECTOR(cell_data_names);
-    std::vector<std::vector<double> > cell_data;
+    // std::vector<std::vector<double> > cell_data;
 
     // if (mOutputMeshInVtkDom)
     // {
@@ -603,6 +603,8 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
         unsigned total_num_nodes = this->mrMesh.GetNumNodes();
         //PRINT_2_VARIABLES(total_num_nodes, num_cell_data_items);
         
+        unsigned cell_data[num_cell_data_items][total_num_nodes];
+
         std::vector<double> ghosts(total_num_nodes);
 
         for (typename std::vector<boost::shared_ptr<AbstractCellWriter<DIM, DIM> > >::iterator cell_writer_iter = this->mCellWriters.begin();
@@ -635,7 +637,6 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
 
             cells_writer.AddPointData((*cell_writer_iter)->GetVtkCellDataName(), vtk_cell_data);
         }
-        
         // Loop over cells
         for (unsigned node_index=0; node_index<total_num_nodes; node_index++)
         {
@@ -656,17 +657,18 @@ void DomMeshBasedCellPopulationWithGhostNodes<DIM>::WriteVtkResultsToFile(const 
 
                 for (unsigned var=0; var<num_cell_data_items; var++)
                 {
+                    // TRACE("adding data");
                     cell_data[var][node_index] = p_cell->GetCellData()->GetItem(cell_data_names[var]);
-                    
+                    // TRACE("got data");
                 }
             }
             
         }
         
-        for (unsigned var=0; var<num_cell_data_items; var++)
-        {
-            cells_writer.AddPointData(cell_data_names[var], cell_data[var]);
-        }
+        // for (unsigned var=0; var<num_cell_data_items; var++)
+        // {
+        //     cells_writer.AddPointData(cell_data_names[var], cell_data[var]);
+        // }
        
         // Make a copy of the nodes in a disposable mesh for writing
         {
